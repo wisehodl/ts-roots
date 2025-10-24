@@ -1,11 +1,11 @@
-import * as secp from "@noble/secp256k1";
+import { hashes as secp_hashes } from "@noble/secp256k1";
 import { schnorr } from "@noble/secp256k1";
 import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { MalformedIDError, MalformedPrivKeyError } from "./errors";
 
-secp.hashes.hmacSha256 = (key, msg) => hmac(sha256, key, msg);
-secp.hashes.sha256 = sha256;
+secp_hashes.hmacSha256 = (key, msg) => hmac(sha256, key, msg);
+secp_hashes.sha256 = sha256;
 
 /**
  * Generates a Schnorr signature for the given event ID using the provided private key.

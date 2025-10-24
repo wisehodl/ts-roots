@@ -6,10 +6,10 @@
 export type Tag = string[];
 
 /**
- * Event represents a Nostr protocol event with its seven required fields.
+ * EventData represents a Nostr protocol event with its seven required fields.
  * All fields must be present for a valid event.
  */
-export interface Event {
+export interface EventData {
   id: string;
   pubkey: string;
   created_at: number;
@@ -36,10 +36,10 @@ export interface FilterExtensions {
 }
 
 /**
- * Filter defines subscription criteria for events.
+ * FilterData defines subscription criteria for events.
  * All conditions within a filter are applied with AND logic.
  */
-export interface Filter {
+export interface FilterData {
   ids?: string[];
   authors?: string[];
   kinds?: number[];

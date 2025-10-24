@@ -6,7 +6,7 @@ import { MalformedPrivKeyError } from "./errors";
  * Generates a new random secp256k1 private key.
  * @returns 64-character lowercase hexadecimal string
  */
-function generatePrivate(): string {
+function generatePrivateKey(): string {
   const { secretKey } = schnorr.keygen();
   return Buffer.from(secretKey).toString("hex");
 }
@@ -17,7 +17,7 @@ function generatePrivate(): string {
  * @returns 64-character lowercase hexadecimal public key (x-coordinate only)
  * @throws {MalformedPrivKeyError} If private key is not 64 lowercase hex characters
  */
-function getPublic(privateKey: string): string {
+function getPublicKey(privateKey: string): string {
   if (!HEX_64_PATTERN.test(privateKey)) {
     throw new MalformedPrivKeyError();
   }
@@ -29,6 +29,6 @@ function getPublic(privateKey: string): string {
 }
 
 export const Keys = {
-  generatePrivate,
-  getPublic,
+  generatePrivateKey,
+  getPublicKey,
 };

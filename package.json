@@ -2,7 +2,7 @@
   "name": "@wisehodl/roots",
   "version": "0.1.0",
   "description": "A minimal Nostr protocol library for typescript",
-  "type": "./dist/types.d.ts",
+  "types": "./dist/types.d.ts",
   "main": "./dist/index.js",
   "exports": {
     ".": {

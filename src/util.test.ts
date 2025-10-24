@@ -1,5 +1,5 @@
 import { test } from "vitest";
-import type { Event } from "./types";
+import type { EventData } from "./types";
 
 test("placeholder", () => {});
 
@@ -8,7 +8,7 @@ export const testSK =
 export const testPK =
   "cfa87f35acbde29ba1ab3ee42de527b2cad33ac487e80cf2d6405ea0042c8fef";
 
-export const testEvent: Event = {
+export const testEvent: EventData = {
   id: "c7a702e6158744ca03508bbb4c90f9dbb0d6e88fefbfaa511d5ab24b4e3c48ad",
   pubkey: testPK,
   created_at: 1760740551,
