@@ -24,7 +24,7 @@ export interface EventData {
  * Keys correspond to tag names without the "#" prefix.
  */
 export interface TagFilters {
-  [tagName: string]: string[];
+  [tagName: string]: string[] | null;
 }
 
 /**
@@ -40,12 +40,12 @@ export interface FilterExtensions {
  * All conditions within a filter are applied with AND logic.
  */
 export interface FilterData {
-  ids?: string[];
-  authors?: string[];
-  kinds?: number[];
-  since?: number;
-  until?: number;
-  limit?: number;
-  tags?: TagFilters;
-  extensions?: FilterExtensions;
+  ids?: string[] | null;
+  authors?: string[] | null;
+  kinds?: number[] | null;
+  since?: number | null;
+  until?: number | null;
+  limit?: number | null;
+  tags?: TagFilters | null;
+  extensions?: FilterExtensions | null;
 }

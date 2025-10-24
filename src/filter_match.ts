@@ -24,13 +24,13 @@ function matchesKinds(candidate: number, kinds: number[]): boolean {
  */
 function matchesTimeRange(
   timestamp: number,
-  since?: number,
-  until?: number,
+  since?: number | null,
+  until?: number | null,
 ): boolean {
-  if (since !== undefined && timestamp < since) {
+  if (since && timestamp < since) {
     return false;
   }
-  if (until !== undefined && timestamp > until) {
+  if (until && timestamp > until) {
     return false;
   }
   return true;
@@ -56,7 +56,7 @@ function matchesTags(eventTags: Tag[], tagFilters: TagFilters): boolean {
   // Check each filter requirement
   for (const [tagName, filterValues] of Object.entries(tagFilters)) {
     // Empty filter values match all events
-    if (filterValues.length === 0) continue;
+    if (!filterValues || filterValues.length === 0) continue;
 
     const eventValues = eventIndex.get(tagName);
     if (!eventValues) return false;
