@@ -1,11 +1,8 @@
-import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex, hexToBytes } from "@noble/hashes/utils.js";
-import { hashes as secp_hashes } from "@noble/secp256k1";
 import { schnorr } from "@noble/secp256k1";
 
-secp_hashes.hmacSha256 = (key, msg) => hmac(sha256, key, msg);
-secp_hashes.sha256 = sha256;
+import "./crypto_init";
 
 /**
  * Generates a Schnorr signature for the given event ID using the provided private key.

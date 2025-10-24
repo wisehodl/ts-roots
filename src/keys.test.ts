@@ -1,9 +1,8 @@
 import { describe, expect, test } from "vitest";
 
+import { HEX_64_PATTERN } from "./constants";
 import { Keys } from "./keys";
 import { testPK, testSK } from "./util.test";
-
-const HEX_64_PATTERN = /^[a-f0-9]{64}$/;
 
 describe("Keys.generatePrivate", () => {
   test("returns 64 hex characters", () => {
