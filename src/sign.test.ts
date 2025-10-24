@@ -1,6 +1,7 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
+
 import { Sign } from "./sign";
-import { testSK, testEvent } from "./util.test";
+import { testEvent, testSK } from "./util.test";
 
 describe("Sign.sign", () => {
   test("produces correct signature", () => {
@@ -10,13 +11,13 @@ describe("Sign.sign", () => {
 
   test("throws on invalid event ID", () => {
     expect(() => Sign.sign("thisisabadeventid", testSK)).toThrow(
-      "event id must be 64 hex characters",
+      /hex string expected,.*/,
     );
   });
 
   test("throws on invalid private key", () => {
     expect(() => Sign.sign(testEvent.id, "thisisabadsecretkey")).toThrow(
-      "private key must be 64 lowercase hex characters",
+      /hex string expected,.*/,
     );
   });
 });

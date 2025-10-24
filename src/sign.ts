@@ -1,8 +1,8 @@
-import { hashes as secp_hashes } from "@noble/secp256k1";
-import { schnorr } from "@noble/secp256k1";
 import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
-import { MalformedIDError, MalformedPrivKeyError } from "./errors";
+import { bytesToHex, hexToBytes } from "@noble/hashes/utils.js";
+import { hashes as secp_hashes } from "@noble/secp256k1";
+import { schnorr } from "@noble/secp256k1";
 
 secp_hashes.hmacSha256 = (key, msg) => hmac(sha256, key, msg);
 secp_hashes.sha256 = sha256;
@@ -16,19 +16,12 @@ secp_hashes.sha256 = sha256;
  * @throws {MalformedPrivKeyError} If private key is not 64 lowercase hex characters
  */
 function sign(eventID: string, privateKey: string): string {
-  const privateKeyBytes = Buffer.from(privateKey, "hex");
-  if (privateKeyBytes.length !== 32) {
-    throw new MalformedPrivKeyError();
-  }
-
-  const idBytes = Buffer.from(eventID, "hex");
-  if (idBytes.length !== 32) {
-    throw new MalformedIDError();
-  }
+  const privateKeyBytes = hexToBytes(privateKey);
+  const idBytes = hexToBytes(eventID);
 
   const auxRand = sha256(privateKeyBytes);
   const signature = schnorr.sign(idBytes, privateKeyBytes, auxRand);
-  return Buffer.from(signature).toString("hex");
+  return bytesToHex(signature);
 }
 
 export const Sign = {

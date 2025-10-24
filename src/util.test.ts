@@ -1,4 +1,5 @@
 import { test } from "vitest";
+
 import type { EventData } from "./types";
 
 test("placeholder", () => {});

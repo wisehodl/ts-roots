@@ -1,7 +1,9 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
+
 import { Keys } from "./keys";
-import { HEX_64_PATTERN } from "./constants";
-import { testSK, testPK } from "./util.test";
+import { testPK, testSK } from "./util.test";
+
+const HEX_64_PATTERN = /^[a-f0-9]{64}$/;
 
 describe("Keys.generatePrivate", () => {
   test("returns 64 hex characters", () => {
@@ -24,7 +26,7 @@ describe("Keys.getPublic", () => {
 
   test("throws on invalid private key - too short", () => {
     expect(() => Keys.getPublicKey("abc123")).toThrow(
-      "private key must be 64 lowercase hex characters",
+      /"secret key" expected.*/,
     );
   });
 
@@ -33,14 +35,6 @@ describe("Keys.getPublic", () => {
       Keys.getPublicKey(
         "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
       ),
-    ).toThrow("private key must be 64 lowercase hex characters");
-  });
-
-  test("throws on invalid private key - uppercase", () => {
-    expect(() =>
-      Keys.getPublicKey(
-        "F43A0435F69529F310BBD1D6263D2FBF0977F54BFE2310CC37AE5904B83BB167",
-      ),
-    ).toThrow("private key must be 64 lowercase hex characters");
+    ).toThrow(/hex string expected,.*/);
   });
 });

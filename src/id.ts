@@ -1,4 +1,6 @@
 import { sha256 } from "@noble/hashes/sha2.js";
+import { bytesToHex } from "@noble/hashes/utils.js";
+
 import type { EventData } from "./types";
 
 /**
@@ -27,7 +29,7 @@ function serialize(event: EventData): string {
 function getID(event: EventData): string {
   const serialized = serialize(event);
   const hash = sha256(new TextEncoder().encode(serialized));
-  return Buffer.from(hash).toString("hex");
+  return bytesToHex(hash);
 }
 
 export const EventID = {

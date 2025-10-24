@@ -1,7 +1,8 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
+
 import { EventID } from "./id";
-import { testEvent, testPK } from "./util.test";
 import type { EventData } from "./types";
+import { testEvent, testPK } from "./util.test";
 
 interface IDTestCase {
   name: string;
