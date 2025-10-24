@@ -93,7 +93,7 @@ function validate(event: EventData): void {
   validateSignature(event);
 }
 
-export const EventValidation = {
+export const Validate = {
   validate,
   validateStructure,
   validateID,
