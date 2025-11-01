@@ -1,12 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { EventID } from "./id";
-import type { EventData } from "./types";
-import { testEvent, testPK } from "./util.test";
+import { testEvent, testPK } from "../util.test";
+import type { Event } from "./event";
+import { getID } from "./id";
 
 interface IDTestCase {
   name: string;
-  event: EventData;
+  event: Event;
   expected: string;
 }
 
@@ -215,7 +215,7 @@ const idTestCases: IDTestCase[] = [
 
 describe("EventID.getID", () => {
   test.each(idTestCases)("$name", ({ event, expected }) => {
-    const actual = EventID.getID(event);
+    const actual = getID(event);
     expect(actual).toBe(expected);
   });
 });

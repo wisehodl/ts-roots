@@ -1,7 +1,7 @@
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex } from "@noble/hashes/utils.js";
 
-import type { EventData } from "./types";
+import type { Event } from "./event";
 
 /**
  * Serializes an event into canonical JSON array format for ID computation.
@@ -9,7 +9,7 @@ import type { EventData } from "./types";
  * @param event - Event to serialize
  * @returns Canonical JSON string
  */
-function serialize(event: EventData): string {
+export function serialize(event: Event): string {
   const serialized = [
     0,
     event.pubkey,
@@ -26,13 +26,8 @@ function serialize(event: EventData): string {
  * @param event - Event to compute ID for
  * @returns 64-character lowercase hexadecimal event ID
  */
-function getID(event: EventData): string {
+export function getID(event: Event): string {
   const serialized = serialize(event);
   const hash = sha256(new TextEncoder().encode(serialized));
   return bytesToHex(hash);
 }
-
-export const EventID = {
-  serialize,
-  getID,
-};

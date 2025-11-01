@@ -1,23 +1,23 @@
 import { describe, expect, test } from "vitest";
 
-import { FilterJSON } from "./filter_json";
-import type { FilterData } from "./types";
+import type { Filter } from "./filter";
+import { fromJSON, toJSON } from "./filter_json";
 
 interface FilterMarshalTestCase {
   name: string;
-  filter: FilterData;
+  filter: Filter;
   expected: string;
 }
 
 interface FilterUnmarshalTestCase {
   name: string;
   input: string;
-  expected: FilterData;
+  expected: Filter;
 }
 
 interface FilterRoundTripTestCase {
   name: string;
-  filter: FilterData;
+  filter: Filter;
 }
 
 const marshalTestCases: FilterMarshalTestCase[] = [
@@ -447,31 +447,31 @@ const roundTripTestCases: FilterRoundTripTestCase[] = [
   },
 ];
 
-describe("FilterJSON.toJSON", () => {
+describe("toJSON", () => {
   test.each(marshalTestCases)("$name", ({ filter, expected }) => {
-    const result = JSON.stringify(FilterJSON.toJSON(filter));
+    const result = JSON.stringify(toJSON(filter));
     const expectedObj = JSON.parse(expected);
     const actualObj = JSON.parse(result);
     expect(actualObj).toEqual(expectedObj);
   });
 });
 
-describe("FilterJSON.fromJSON", () => {
+describe("fromJSON", () => {
   test.each(unmarshalTestCases)("$name", ({ input, expected }) => {
-    const result = FilterJSON.fromJSON(JSON.parse(input));
+    const result = fromJSON(JSON.parse(input));
     expectEqualFilters(result, expected);
   });
 });
 
 describe("FilterJSON round trip", () => {
   test.each(roundTripTestCases)("$name", ({ filter }) => {
-    const jsonBytes = JSON.stringify(FilterJSON.toJSON(filter));
-    const result = FilterJSON.fromJSON(JSON.parse(jsonBytes));
+    const jsonBytes = JSON.stringify(toJSON(filter));
+    const result = fromJSON(JSON.parse(jsonBytes));
     expectEqualFilters(result, filter);
   });
 });
 
-function expectEqualFilters(got: FilterData, want: FilterData): void {
+function expectEqualFilters(got: Filter, want: Filter): void {
   expect(got.ids).toEqual(want.ids);
   expect(got.authors).toEqual(want.authors);
   expect(got.kinds).toEqual(want.kinds);

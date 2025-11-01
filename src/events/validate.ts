@@ -1,8 +1,8 @@
 import { hexToBytes } from "@noble/hashes/utils.js";
 import { schnorr } from "@noble/secp256k1";
 
-import { HEX_64_PATTERN, HEX_128_PATTERN } from "./constants";
-import "./crypto_init";
+import { HEX_64_PATTERN, HEX_128_PATTERN } from "../constants";
+import "../crypto_init";
 import {
   FailedIDCompError,
   InvalidSigError,
@@ -11,9 +11,9 @@ import {
   MalformedSigError,
   MalformedTagError,
   NoEventIDError,
-} from "./errors";
-import { EventID } from "./id";
-import type { EventData } from "./types";
+} from "../errors";
+import type { Event } from "./event";
+import { getID } from "./id";
 
 /**
  * Checks event field formats and lengths conform to protocol specification.
@@ -22,7 +22,7 @@ import type { EventData } from "./types";
  * @throws {MalformedSigError} If sig is not 128 hex characters
  * @throws {MalformedTagError} If any tag has fewer than 2 elements
  */
-function validateStructure(event: EventData): void {
+export function validateStructure(event: Event): void {
   if (!HEX_64_PATTERN.test(event.pubkey)) {
     throw new MalformedPubKeyError();
   }
@@ -48,10 +48,10 @@ function validateStructure(event: EventData): void {
  * @throws {NoEventIDError} If event.id is empty
  * @throws {Error} If computed ID does not match stored ID
  */
-function validateID(event: EventData): void {
+export function validateID(event: Event): void {
   let computedID: string;
   try {
-    computedID = EventID.getID(event);
+    computedID = getID(event);
   } catch (err) {
     throw new FailedIDCompError();
   }
@@ -71,7 +71,7 @@ function validateID(event: EventData): void {
  * Verifies the cryptographic signature using Schnorr verification.
  * @throws {InvalidSigError} If signature verification fails
  */
-function validateSignature(event: EventData): void {
+export function validateSignature(event: Event): void {
   const idBytes = hexToBytes(event.id);
   const sigBytes = hexToBytes(event.sig);
   const pubkeyBytes = hexToBytes(event.pubkey);
@@ -87,15 +87,8 @@ function validateSignature(event: EventData): void {
  * Performs complete event validation: structure, ID, and signature.
  * @throws First validation error encountered
  */
-function validate(event: EventData): void {
+export function validate(event: Event): void {
   validateStructure(event);
   validateID(event);
   validateSignature(event);
 }
-
-export const Validate = {
-  validate,
-  validateStructure,
-  validateID,
-  validateSignature,
-};

@@ -1,4 +1,5 @@
-import type { EventData, FilterData, Tag, TagFilters } from "./types";
+import type { Event, Tag } from "../events";
+import type { Filter, TagFilters } from "./filter";
 
 /**
  * Returns true if candidate starts with any prefix in the list.
@@ -76,7 +77,7 @@ function matchesTags(eventTags: Tag[], tagFilters: TagFilters): boolean {
  * Returns true if the event satisfies all filter conditions (AND logic).
  * Does not account for custom extensions.
  */
-function matches(filter: FilterData, event: EventData): boolean {
+export function matches(filter: Filter, event: Event): boolean {
   // Check ID prefixes
   if (filter.ids && filter.ids.length > 0) {
     if (!matchesPrefix(event.id, filter.ids)) {
@@ -112,7 +113,3 @@ function matches(filter: FilterData, event: EventData): boolean {
 
   return true;
 }
-
-export const FilterMatch = {
-  matches,
-};

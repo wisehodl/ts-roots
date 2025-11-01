@@ -1,11 +1,11 @@
-import type { EventData } from "./types";
+import type { Event } from "./event";
 
 /**
  * Converts an event to a plain object suitable for JSON.stringify().
  * @param event - Event to convert
  * @returns Plain object matching JSON structure
  */
-function toJSON(event: EventData): object {
+export function toJSON(event: Event): object {
   return {
     id: event.id,
     pubkey: event.pubkey,
@@ -22,7 +22,7 @@ function toJSON(event: EventData): object {
  * @param json - Parsed JSON object
  * @returns Event instance
  */
-function fromJSON(json: any): EventData {
+export function fromJSON(json: any): Event {
   return {
     id: json.id || "",
     pubkey: json.pubkey || "",
@@ -33,8 +33,3 @@ function fromJSON(json: any): EventData {
     sig: json.sig || "",
   };
 }
-
-export const EventJSON = {
-  toJSON,
-  fromJSON,
-};

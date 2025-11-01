@@ -1,10 +1,10 @@
-import type { FilterData, FilterExtensions, TagFilters } from "./types";
+import type { Filter, TagFilters } from "./filter";
 
 /**
  * Converts a filter to a plain object suitable for JSON.stringify().
  * Merges standard fields, tag filters (prefixed with #), and extensions.
  */
-function toJSON(filter: FilterData): object {
+export function toJSON(filter: Filter): object {
   const output: Record<string, any> = {};
 
   // Standard fields
@@ -46,8 +46,8 @@ function toJSON(filter: FilterData): object {
  * Parses a filter from JSON data.
  * Separates standard fields, tag filters (keys starting with #), and extensions.
  */
-function fromJSON(json: any): FilterData {
-  const filter: FilterData = {};
+export function fromJSON(json: any): Filter {
+  const filter: Filter = {};
   const remaining: Record<string, any> = { ...json };
 
   // Extract standard fields
@@ -96,8 +96,3 @@ function fromJSON(json: any): FilterData {
 
   return filter;
 }
-
-export const FilterJSON = {
-  toJSON,
-  fromJSON,
-};

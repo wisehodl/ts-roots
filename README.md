@@ -34,8 +34,14 @@ npm install @wisehodl/roots
 2. Import it:
 
 ```typescript
-import { Event, Filter, Keys } from '@wisehodl/roots';
-import type { EventData, FilterData } from '@wisehodl/roots';
+import * as events from '@wisehodl/roots/events';
+import * as filters from '@wisehodl/roots/filters';
+import * as keys from '@wisehodl/roots/keys';
+import * as constants from '@wisehodl/roots/constants';
+import * as errors from '@wisehodl/roots/errors';
+
+import type { Event } from '@wisehodl/roots/events';
+import type { Filter } from '@wisehodl/roots/filters';
 ```
 
 ## Usage Examples
@@ -45,15 +51,15 @@ import type { EventData, FilterData } from '@wisehodl/roots';
 #### Generate a new keypair
 
 ```typescript
-const privateKey = Keys.generatePrivateKey();
-const publicKey = Keys.getPublicKey(privateKey);
+const privateKey = keys.generatePrivateKey();
+const publicKey = keys.getPublicKey(privateKey);
 ```
 
 #### Derive public key from existing private key
 
 ```typescript
 const privateKey = "f43a0435f69529f310bbd1d6263d2fbf0977f54bfe2310cc37ae5904b83bb167";
-const publicKey = Keys.getPublicKey(privateKey);
+const publicKey = keys.getPublicKey(privateKey);
 // publicKey: "cfa87f35acbde29ba1ab3ee42de527b2cad33ac487e80cf2d6405ea0042c8fef"
 ```
 
@@ -65,7 +71,7 @@ const publicKey = Keys.getPublicKey(privateKey);
 
 ```typescript
 // 1. Build the event structure
-const event: EventData = {
+const event: Event = {
   pubkey: publicKey,
   created_at: Math.floor(Date.now() / 1000),
   kind: 1,
@@ -79,11 +85,11 @@ const event: EventData = {
 };
 
 // 2. Compute the event ID
-const id = Event.getID(event);
+const id = events.getID(event);
 event.id = id;
 
 // 3. Sign the event
-const sig = Event.sign(id, privateKey);
+const sig = events.sign(id, privateKey);
 event.sig = sig;
 ```
 
@@ -91,13 +97,13 @@ event.sig = sig;
 
 ```typescript
 // Returns canonical JSON: [0, pubkey, created_at, kind, tags, content]
-const serialized = Event.serialize(event);
+const serialized = events.serialize(event);
 ```
 
 #### Compute event ID manually
 
 ```typescript
-const id = Event.getID(event);
+const id = events.getID(event);
 // Returns lowercase hex SHA-256 hash of serialized form
 ```
 
@@ -110,7 +116,7 @@ const id = Event.getID(event);
 ```typescript
 // Checks structure, ID computation, and signature
 try {
-  Event.validate(event);
+  events.validate(event);
 } catch (err) {
   console.log(`Invalid event: ${err.message}`);
 }
@@ -121,21 +127,21 @@ try {
 ```typescript
 // Check field formats and lengths
 try {
-  Event.validateStructure(event);
+  events.validateStructure(event);
 } catch (err) {
   console.log(`Malformed structure: ${err.message}`);
 }
 
 // Verify ID matches computed hash
 try {
-  Event.validateID(event);
+  events.validateID(event);
 } catch (err) {
   console.log(`ID mismatch: ${err.message}`);
 }
 
 // Verify cryptographic signature
 try {
-  Event.validateSignature(event);
+  events.validateSignature(event);
 } catch (err) {
   console.log(`Invalid signature: ${err.message}`);
 }
@@ -148,18 +154,18 @@ try {
 #### Marshal event to JSON
 
 ```typescript
-const jsonString = JSON.stringify(Event.toJSON(event));
-// Standard JSON.stringify works with Event.toJSON()
+const jsonString = JSON.stringify(events.toJSON(event));
+// Standard JSON.stringify works with events.toJSON()
 ```
 
 #### Unmarshal event from JSON
 
 ```typescript
-const event = Event.fromJSON(JSON.parse(jsonString));
+const event = events.fromJSON(JSON.parse(jsonString));
 
 // Validate after unmarshaling
 try {
-  Event.validate(event);
+  events.validate(event);
 } catch (err) {
   console.log(`Received invalid event: ${err.message}`);
 }
@@ -175,7 +181,7 @@ try {
 const since = Math.floor(Date.now() / 1000) - (24 * 60 * 60);
 const limit = 50;
 
-const filter: FilterData = {
+const filter: Filter = {
   ids: ["abc123", "def456"],  // Prefix match
   authors: ["cfa87f35"],      // Prefix match
   kinds: [1, 6, 7],
@@ -187,7 +193,7 @@ const filter: FilterData = {
 #### Filter with tag conditions
 
 ```typescript
-const filter: FilterData = {
+const filter: Filter = {
   kinds: [1],
   tags: {
     e: ["5c83da77af1dec6d7289834998ad7aafbd9e2191396d75ec3cc27f5a77226f36"],
@@ -201,7 +207,7 @@ const filter: FilterData = {
 ```typescript
 // Extensions allow arbitrary JSON fields beyond the standard filter spec.
 // For example, this is how to implement non-standard filters like 'search'.
-const filter: FilterData = {
+const filter: Filter = {
   kinds: [1],
   extensions: {
     search: "bitcoin",
@@ -219,12 +225,12 @@ const filter: FilterData = {
 #### Match single event
 
 ```typescript
-const filter: FilterData = {
+const filter: Filter = {
   authors: ["cfa87f35"],
   kinds: [1],
 };
 
-if (Filter.matches(filter, event)) {
+if (filters.matches(filter, event)) {
   // Event satisfies all filter conditions
 }
 ```
@@ -233,7 +239,7 @@ if (Filter.matches(filter, event)) {
 
 ```typescript
 const since = Math.floor(Date.now() / 1000) - (60 * 60);
-const filter: FilterData = {
+const filter: Filter = {
   kinds: [1],
   since: since,
   tags: {
@@ -241,7 +247,7 @@ const filter: FilterData = {
   },
 };
 
-const matches = events.filter(event => Filter.matches(filter, event));
+const matches = eventCollection.filter(event => filters.matches(filter, event));
 ```
 
 ---
@@ -251,7 +257,7 @@ const matches = events.filter(event => Filter.matches(filter, event));
 #### Marshal filter to JSON
 
 ```typescript
-const filter: FilterData = {
+const filter: Filter = {
   ids: ["abc123"],
   kinds: [1],
   tags: {
@@ -262,7 +268,7 @@ const filter: FilterData = {
   },
 };
 
-const jsonString = JSON.stringify(Filter.toJSON(filter));
+const jsonString = JSON.stringify(filters.toJSON(filter));
 // Result: {"ids":["abc123"],"kinds":[1],"#e":["event-id"],"search":"nostr"}
 ```
 
@@ -277,7 +283,7 @@ const jsonData = `{
   "search": "bitcoin"
 }`;
 
-const filter = Filter.fromJSON(JSON.parse(jsonData));
+const filter = filters.fromJSON(JSON.parse(jsonData));
 
 // Standard fields populated: authors, kinds, since
 // Tag filters populated: tags.e = ["abc123"]
@@ -299,7 +305,7 @@ During marshaling, extensions merge into the output JSON. During unmarshaling, u
 Example implementing search filter:
 
 ```typescript
-const filter: FilterData = {
+const filter: Filter = {
   kinds: [1],
   extensions: {
     search: "bitcoin",

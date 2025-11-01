@@ -1,13 +1,27 @@
 {
   "name": "@wisehodl/roots",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A minimal Nostr protocol library for typescript",
-  "types": "./dist/types.d.ts",
-  "main": "./dist/index.js",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+    "./events": {
+      "import": "./dist/events/index.js",
+      "types": "./dist/events/index.d.ts"
+    },
+    "./filters": {
+      "import": "./dist/filters/index.js",
+      "types": "./dist/filters/index.d.ts"
+    },
+    "./keys": {
+      "import": "./dist/keys/index.js",
+      "types": "./dist/keys/index.d.ts"
+    },
+    "./constants": {
+      "import": "./dist/constants/index.js",
+      "types": "./dist/constants/index.d.ts"
+    },
+    "./errors": {
+      "import": "./dist/errors/index.js",
+      "types": "./dist/errors/index.d.ts"
     }
   },
   "files": [

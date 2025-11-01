@@ -1,16 +1,17 @@
 import { readFileSync } from "fs";
 import { describe, expect, test } from "vitest";
 
-import { FilterMatch } from "./filter_match";
-import type { EventData, FilterData } from "./types";
+import type { Event } from "../events";
+import type { Filter } from "./filter";
+import { matches } from "./filter_match";
 
-const testEvents: EventData[] = JSON.parse(
+const testEvents: Event[] = JSON.parse(
   readFileSync("src/testdata/test_events.json", "utf-8"),
 );
 
 interface FilterTestCase {
   name: string;
-  filter: FilterData;
+  filter: Filter;
   expectedIDs: string[];
 }
 
@@ -365,19 +366,19 @@ const filterTestCases: FilterTestCase[] = [
   },
 ];
 
-describe("FilterMatch.matches", () => {
+describe("matches", () => {
   test.each(filterTestCases)("$name", ({ filter, expectedIDs }) => {
     const actualIDs = testEvents
-      .filter((event) => FilterMatch.matches(filter, event))
+      .filter((event) => matches(filter, event))
       .map((event) => event.id.slice(0, 8));
 
     expect(actualIDs).toEqual(expectedIDs);
   });
 });
 
-describe("FilterMatch.matches - skip malformed tags", () => {
+describe("matches - skip malformed tags", () => {
   test("skips malformed tags during tag matching", () => {
-    const event: EventData = {
+    const event: Event = {
       id: "test",
       pubkey: "test",
       created_at: 0,
@@ -386,10 +387,10 @@ describe("FilterMatch.matches - skip malformed tags", () => {
       content: "",
       sig: "test",
     };
-    const filter: FilterData = {
+    const filter: Filter = {
       tags: { valid: ["value"] },
     };
 
-    expect(FilterMatch.matches(filter, event)).toBe(true);
+    expect(matches(filter, event)).toBe(true);
   });
 });

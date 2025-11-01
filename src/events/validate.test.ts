@@ -1,12 +1,17 @@
 import { describe, expect, test } from "vitest";
 
-import type { EventData } from "./types";
-import { testEvent, testPK } from "./util.test";
-import { Validate } from "./validate";
+import { testEvent, testPK } from "../util.test";
+import type { Event } from "./event";
+import {
+  validate,
+  validateID,
+  validateSignature,
+  validateStructure,
+} from "./validate";
 
 interface ValidateEventTestCase {
   name: string;
-  event: EventData;
+  event: Event;
   expectedError: string;
 }
 
@@ -114,33 +119,31 @@ const structureTestCases: ValidateEventTestCase[] = [
 
 describe("EventValidation.validateStructure", () => {
   test.each(structureTestCases)("$name", ({ event, expectedError }) => {
-    expect(() => Validate.validateStructure(event)).toThrow(expectedError);
+    expect(() => validateStructure(event)).toThrow(expectedError);
   });
 });
 
 describe("EventValidation.validateID", () => {
   test("detects ID mismatch", () => {
-    const event: EventData = {
+    const event: Event = {
       ...testEvent,
       id: "7f661c2a3c1ed67dc959d6cd968d743d5e6e334313df44724bca939e2aa42c9e",
     };
-    expect(() => Validate.validateID(event)).toThrow(
-      "does not match computed id",
-    );
+    expect(() => validateID(event)).toThrow("does not match computed id");
   });
 });
 
 describe("EventValidation.validateSignature", () => {
   test("accepts valid signature", () => {
-    expect(() => Validate.validateSignature(testEvent)).not.toThrow();
+    expect(() => validateSignature(testEvent)).not.toThrow();
   });
 
   test("rejects invalid signature", () => {
-    const event: EventData = {
+    const event: Event = {
       ...testEvent,
       sig: "9e43cbcf7e828a21c53fa35371ee79bffbfd7a3063ae46fc05ec623dd3186667c57e3d006488015e19247df35eb41c61013e051aa87860e23fa5ffbd44120482",
     };
-    expect(() => Validate.validateSignature(event)).toThrow(
+    expect(() => validateSignature(event)).toThrow(
       "event signature is invalid",
     );
   });
@@ -196,15 +199,15 @@ describe("EventValidation.validateSignature - malformed inputs", () => {
   test.each(validateSignatureTestCases)(
     "$name",
     ({ id, sig, pubkey, expectedError }) => {
-      const event: EventData = { ...testEvent, id, sig, pubkey };
-      expect(() => Validate.validateSignature(event)).toThrow(expectedError);
+      const event: Event = { ...testEvent, id, sig, pubkey };
+      expect(() => validateSignature(event)).toThrow(expectedError);
     },
   );
 });
 
 describe("EventValidation.validate", () => {
   test("validates complete event", () => {
-    const event: EventData = {
+    const event: Event = {
       id: "c9a0f84fcaa889654da8992105eb122eb210c8cbd58210609a5ef7e170b51400",
       pubkey: testPK,
       created_at: testEvent.created_at,
@@ -216,6 +219,6 @@ describe("EventValidation.validate", () => {
       content: "valid event",
       sig: "668a715f1eb983172acf230d17bd283daedb2598adf8de4290bcc7eb0b802fdb60669d1e7d1104ac70393f4dbccd07e8abf897152af6ce6c0a75499874e27f14",
     };
-    expect(() => Validate.validate(event)).not.toThrow();
+    expect(() => validate(event)).not.toThrow();
   });
 });
