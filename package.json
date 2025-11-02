@@ -1,7 +1,7 @@
 {
   "name": "@wisehodl/roots",
   "version": "0.2.1",
-  "description": "A minimal Nostr protocol library for typescript",
+  "description": "Nostr protocol primitives for typescript",
   "license": "MIT",
   "exports": {
     "./events": {
