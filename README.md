@@ -6,7 +6,7 @@ Mirror: https://github.com/wisehodl/ts-roots
 
 ## What this library does
 
-`ts-roots` is a purposefully minimal Nostr protocol library for TypeScript.
+`ts-roots` is a consensus-layer Nostr protocol library for TypeScript.
 It only provides primitives that define protocol compliance:
 
 - Event Structure
